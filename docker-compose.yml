@@ -1,0 +1,46 @@
+version: '3.3'
+
+services:
+  learning:
+    image: webdevops/php-apache-dev:7.4
+    container_name: learning
+    restart: always
+    user: application
+    environment:
+      - WEB_ALIAS_DOMAIN=learning.applocal
+      - xdebug.remote_enable=1
+      - xdebug.remote_port=80
+      - xdebug.idekey=PHPSTORM
+      - xdebug.remote_mode=REQ
+      - xdebug.remote_connect_back=0
+      - WEB_DOCUMENT_ROOT=/app
+      - DB_HOST=mysql_shopify:3306
+      - SERVICE_SUPERVISOR_USER=root
+      - PHP_DATE_TIMEZONE=EST
+      - PHP_DISPLAY_ERRORS=1
+      - PHP_MEMORY_LIMIT=2048M
+      - PHP_MAX_EXECUTION_TIME=1800
+      - PHP_POST_MAX_SIZE=500M
+      - PHP_UPLOAD_MAX_FILESIZE=1024M
+      - PHP_EXTENSION_XDEBUG=1
+    volumes:
+      - ./:/app
+    ports:
+      - "80:80"
+      - "443:443"
+      - "32823:22"
+    links:
+      - mysql_learning
+  mysql_learning:
+    image: mariadb:10
+    container_name: mysql_learning
+    restart: always
+    ports:
+      - "3336:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=learning
+
+volumes:
+  db-data:
+    external: false
